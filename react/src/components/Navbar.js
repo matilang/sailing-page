@@ -14,7 +14,7 @@ function Navbar() {
       console.log(response)
       localStorage.setItem('islogged', false)
       localStorage.setItem('role','student')
-      navigate('/');
+      navigate('/sailing-webpage');
       window.location.reload();
 
     })
@@ -36,9 +36,7 @@ function Navbar() {
       </div>
       <div className='main-bar'>
         {isLogged ? (
-              <button className='btn' onClick={LogoutUser}>
-              <Link to='/sailing-webpage'>Wyloguj się</Link>
-            </button>
+              <button className='btn' onClick={LogoutUser}>Wyloguj się</button>
         ) : (
           <button className='btn'>
               <Link to='/signup'>Zaloguj się</Link>

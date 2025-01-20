@@ -1,13 +1,13 @@
 services:
   react:
-    image: matilan/react:2.0
+    image: matilan/react:4.0
     build: ./react
     ports:
       - "3001:3001"
     environment:
       - PORT=3001
   node_server:
-    image: matilan/node:1.0
+    image: matilan/server:2.0
     build: 
       context: /server
     ports:
