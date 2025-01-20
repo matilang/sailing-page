@@ -19,8 +19,8 @@ Students:
 
 Instructors:
 1. {
-  "username": "instructor",
-  "password": "instructor_password"
+  "username": "instructor1",
+  "password": "instructor1_password"
 }
 
 2. {

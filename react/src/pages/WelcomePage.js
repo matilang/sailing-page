@@ -9,7 +9,7 @@ import {articles} from '../components/ArticleData';
 
 const Body = () => {
 
-    const {userRole, role} = useAuth();
+    const {userRole} = useAuth();
     console.log(userRole)
     const pageTitle = 'Sekcja Żeglarska Politechniki Gdańskiej';
     const pageLinks = [

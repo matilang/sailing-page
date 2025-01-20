@@ -5,7 +5,6 @@ export default function SideHeader() {
 
     const isLogged = localStorage.getItem('islogged') === 'true';
     const isAdmin = localStorage.getItem('role') === 'admin';
-    const isInstructor = localStorage.getItem('role') === 'instructor';
 
     return (
 

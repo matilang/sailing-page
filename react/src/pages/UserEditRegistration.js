@@ -1,66 +1,44 @@
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import '../App.css'
-import SideHeader from '../components/SideHeader';
-import TitleBar from '../components/TitleBar';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "../App.css";
+import SideHeader from "../components/SideHeader";
+import TitleBar from "../components/TitleBar";
 
 const UserEditCourse = () => {
-  const courseId = localStorage.getItem('courseId');
+  const courseId = localStorage.getItem("courseId");
   const navigate = useNavigate();
-  const pageTitle = 'Edytuj Kurs';
+  const pageTitle = "Edytuj Kurs";
   const pageLinks = [
-    { text: 'Politechnika Gdańska', href: '/sailing-webpage' },
-    { text: 'Sekcja Żeglarska Politechniki Gdańskiej', href: '/sailing-webpage' },
-    { text: 'Moje Kursy', href: '/userpage' },
-    { text: 'Edytuj Kurs', href: '/usereditcourse' },
+    { text: "Politechnika Gdańska", href: "/sailing-webpage" },
+    { text: "Sekcja Żeglarska Politechniki Gdańskiej", href: "/sailing-webpage" },
+    { text: "Moje Kursy", href: "/userpage" },
+    { text: "Edytuj Kurs", href: "/usereditcourse" },
   ];
 
   const [course, setCourse] = useState(null);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    pesel: '',
-    phoneNumber: '',
-    cost: '',
-    date: '',
-    email: '',
-    studentIdNumber: '',
-    azsPgMembershipCardNumber: '',
-    tShirtSize: '',
-    meals: '',
-    referringSource: '',
-  });
+  const [formData, setFormData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Pobierz dane kursu i uzupełnione dane użytkownika
   useEffect(() => {
-    axios
-      .get(`/courses/${courseId}`)
-      .then((response) => {
-        const courseData = response.data;
-        setCourse(courseData);
+    const fetchCourseAndFormData = async () => {
+      try {
+        // Pobranie szczegółów kursu
+        const courseResponse = await axios.get(`/courses/${courseId}`);
+        setCourse(courseResponse.data);
 
-        const initialFormData = {
-          firstName: '',
-          lastName: '',
-          pesel: '',
-          phoneNumber: '',
-          cost: '',
-          date: '',
-          email: '',
-          studentIdNumber: '',
-          azsPgMembershipCardNumber: '',
-          tShirtSize: '',
-          meals: '',
-          referringSource: '',
-        };
+        // Pobranie danych rejestracyjnych użytkownika
+        const formResponse = await axios.get(`/user/form-registration/${courseId}`);
+        setFormData(formResponse.data.fields[0]); // Używamy fields[0] w przypadku, gdy jest tylko jeden obiekt
+      } catch (error) {
+        console.error("Error fetching course or registration data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        courseData.registrationFormTemplate?.fields?.forEach((field) => {
-          initialFormData[field.fieldName] = '';
-        });
-
-        setFormData(initialFormData);
-      })
-      .catch((error) => console.error('Error fetching course details:', error));
+    fetchCourseAndFormData();
   }, [courseId]);
 
   const handleChange = (e) => {
@@ -72,24 +50,32 @@ const UserEditCourse = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Dane do zapisu:', formData);
+    console.log("Dane do zapisu:", formData);
 
     axios
-      .post(`/user/form-registration/${courseId}`, formData)
+      .put(`/user/form-registration/${courseId}`, { fields: [formData] }) // Wysyłamy tablicę z formData
       .then((result) => {
         console.log(result);
-        navigate('/');
+        navigate("/userpage");
       })
       .catch((err) => {
         console.error(err);
         if (err.response) {
-          console.error('Server responded with:', err.response.data);
+          console.error("Server responded with:", err.response.data);
         }
       });
   };
 
+  if (isLoading) {
+    return <div className="main-content">Ładowanie danych...</div>;
+  }
+
+  if (!formData) {
+    return <div className="main-content">Brak danych do edycji.</div>;
+  }
+
   return (
-    <div className='main-content'>
+    <div className="main-content">
       <TitleBar mainTitle={pageTitle} pageLinks={pageLinks} />
       <div className="text">
         <div className="regist">
@@ -141,19 +127,25 @@ const UserEditCourse = () => {
             <br />
             <label>
               Koszt kursu:
-              <input
-                type="text"
+              <select
                 name="cost"
                 value={formData.cost}
-                onChange={handleChange}
-                autoComplete="off"
-              />
+                onChange={handleChange}>
+                {course && (
+                  <>
+                    <option value={course.costForStudents}>Student PG - {course.costForStudents} zł</option>
+                    <option value={course.costForWorkers}>Instruktor - {course.costForWorkers} zł</option>
+                    <option value={course.costForAWSMembers}>Członek AWS - {course.costForAWSMembers} zł</option>
+                    <option value={course.regularCost}>Bez zniżek - {course.regularCost} zł</option>
+                  </>
+                )}
+              </select>
             </label>
             <br />
             <label>
               Data rozpoczęcia:
               <input
-                type="text"
+                type="date"
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
@@ -164,7 +156,7 @@ const UserEditCourse = () => {
             <label>
               Email:
               <input
-                type="text"
+                type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
@@ -196,82 +188,45 @@ const UserEditCourse = () => {
             <br />
             <label>
               Rozmiar koszulki:
-              <input
-                type="text"
+              <select
                 name="tShirtSize"
                 value={formData.tShirtSize}
                 onChange={handleChange}
-                autoComplete="off"
-              />
+              >
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+              </select>
             </label>
             <br />
             <label>
               Posiłki:
-              <input
-                type="text"
+              <select
                 name="meals"
                 value={formData.meals}
                 onChange={handleChange}
-                autoComplete="off"
-              />
+              >
+                <option value="vegan">Wegańska</option>
+                <option value="vegetarian">Wegetariańska</option>
+                <option value="regular">Standardowa</option>
+              </select>
             </label>
             <br />
             <label>
               Źródło polecające:
-              <input
-                type="text"
+              <select
                 name="referringSource"
                 value={formData.referringSource}
                 onChange={handleChange}
-                autoComplete="off"
-              />
+              >
+                <option value="friends">Znajomi</option>
+                <option value="web">Strona internetowa</option>
+                <option value="socialMedia">Media społecznościowe</option>
+              </select>
             </label>
-            {course?.registrationFormTemplate?.fields?.map((field, index) => (
-              <div key={index} className="form-group">
-                <label htmlFor={field.fieldName}>{field.fieldName}</label>
-                {field.fieldType === 'text' && (
-                  <input
-                    type="text"
-                    name={field.fieldName}
-                    value={formData[field.fieldName] || ''}
-                    onChange={handleChange}
-                    required={field.isRequired}
-                    autoComplete="off"
-                  />
-                )}
-                {field.fieldType === 'number' && (
-                  <input
-                    type="number"
-                    name={field.fieldName}
-                    value={formData[field.fieldName] || ''}
-                    onChange={handleChange}
-                    required={field.isRequired}
-                    autoComplete="off"
-                  />
-                )}
-                {field.fieldType === 'date' && (
-                  <input
-                    type="date"
-                    name={field.fieldName}
-                    value={formData[field.fieldName] || ''}
-                    onChange={handleChange}
-                    required={field.isRequired}
-                  />
-                )}
-                {field.fieldType === 'email' && (
-                  <input
-                    type="email"
-                    name={field.fieldName}
-                    value={formData[field.fieldName] || ''}
-                    onChange={handleChange}
-                    required={field.isRequired}
-                    autoComplete="off"
-                  />
-                )}
-              </div>
-            ))}
             <br />
-            <button type="submit">Zapisz się na kurs</button>
+            <button type="submit">Edytuj uzupełnione dane</button>
           </form>
         </div>
       </div>

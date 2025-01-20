@@ -35,7 +35,7 @@ const CreateCourseForm = () => {
     try {
       const response = await axios.post(`/courses/${courseId}/form-templates`, {fields:[formData]} );
       console.log('New Form Template made successfully:', response.data);
-      navigate('/');
+      navigate('/allcourses');
     } catch (error) {
       console.error('Error creating course:', error);
 

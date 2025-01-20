@@ -10,6 +10,8 @@ const AllCourses = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const isAdmin = localStorage.getItem('role') === 'admin';
+  const isInstructor = localStorage.getItem('role') === 'instructor';
+
 
   const pageTitle = 'Wszystkie Kursy';
     const pageLinks = [
@@ -47,6 +49,7 @@ const AllCourses = () => {
             key={course._id}
             course={course}
             isAdmin={isAdmin}
+            isInstructor={isInstructor}
           />
         ))}
       </div>

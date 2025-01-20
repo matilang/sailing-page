@@ -332,6 +332,16 @@ nav a {
   max-width: 700px;
 }
 
+.add-question {
+  border-bottom: 2px solid #000;
+  cursor: pointer;
+  max-width: 700px;
+}
+
+.textarea{
+  max-width: 700px;
+}
+
 .question {
   display: flex;
   justify-content: space-between;
@@ -343,6 +353,23 @@ nav a {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;
+}
+.question-item-button {
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: 1px solid #000;
+  background-color: var(--mainColorLight);
+  color: #eee;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.question-item-button:hover {
+  cursor: pointer;
+  background-color: var(--mainColor);
 }
 
 .faq.active .answer {
@@ -675,6 +702,21 @@ nav a {
   font-size: 14px;
 }
 
+.regist select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.regist select:hover {
+  cursor: pointer; 
+}
+
 .regist button {
   padding: 8px;
   border: 1px solid #000;
@@ -686,6 +728,7 @@ nav a {
 
 .regist button:hover {
   background-color: #052f52;
+  cursor: pointer; 
 }
 
 /* ---------------------------------------------------------------------------------- */

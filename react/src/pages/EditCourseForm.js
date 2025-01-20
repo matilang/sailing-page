@@ -51,7 +51,7 @@ const CreateCourseForm = () => {
     try {
       const response = await axios.put(`/courses/${courseId}`, formData);
       console.log('Course edited successfully:', response.data);
-      navigate('/');
+      navigate('/allcourses');
     } catch (error) {
       console.error('Error editing course:', error);
     }

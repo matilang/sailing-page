@@ -12,6 +12,8 @@ const User = require("./models/user");
 const authRoutes = require("./routes/auth");
 const coursesRoutes = require("./routes/courses");
 const userRoutes = require("./routes/user");
+const faqRoutes = require("./routes/faq");
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,6 +36,8 @@ mongoose.connect(
 app.use("/auth", authRoutes);
 app.use("/courses", coursesRoutes);
 app.use("/user", userRoutes);
+app.use("/faq", faqRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Server is running properly.");

@@ -57,7 +57,7 @@ const EditUser = () => {
     try {
       const response = await axios.put('/user/user-profile', filteredData); // Zapisz zmiany na serwerze
       console.log('Zaktualizowano dane użytkownika:', response.data);
-      navigate('/');
+      navigate('/edituser');
     } catch (error) {
       console.error('Błąd podczas aktualizacji danych:', error);
       if (error.response) {

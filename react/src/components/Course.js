@@ -3,7 +3,7 @@ import '../App.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-export const Course = ({ course, isAdmin, isUserPage, isArchived}) => {
+export const Course = ({ course, isAdmin, isInstructor, isUserPage, isArchived}) => {
 
   const navigate = useNavigate();
 
@@ -45,9 +45,38 @@ export const Course = ({ course, isAdmin, isUserPage, isArchived}) => {
 
   const handleDeletefromCourses = (courseId) => {
     axios.put(`user/unregister/${courseId}`)
-    .then(response => console.log(response))
+    .then(response => {
+      console.log(response);
+      window.location.reload();
+    } )
     .catch(err => console.error(err))
-    navigate('/')
+    navigate('/userpage')
+  };
+
+  const handleSignupForFullCourse = (courseId) => {
+    axios.post(`/user/instructors/enroll/${courseId}`)
+      .then(response => {
+        console.log("Zapisano instruktora na cały kurs:", response.data);
+        alert("Zostałeś zapisany na cały kurs.");
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error("Błąd przy zapisie na cały kurs:", error.response?.data || error.message);
+        alert("Nie udało się zapisać na cały kurs. Sprawdź szczegóły.");
+      });
+  };
+  
+  const handleSignupForHalfCourse = (courseId) => {
+    axios.post(`/user/instructors/enroll-half/${courseId}`)
+      .then(response => {
+        console.log("Zapisano instruktora na połowę kursu:", response.data);
+        alert("Zostałeś zapisany na połowę kursu.");
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error("Błąd przy zapisie na połowę kursu:", error.response?.data || error.message);
+        alert("Nie udało się zapisać na połowę kursu. Sprawdź szczegóły.");
+      });
   };
 
   return (
@@ -57,12 +86,34 @@ export const Course = ({ course, isAdmin, isUserPage, isArchived}) => {
       <p>Data rozpoczęcia: {new Date(course.dates[0]).toLocaleDateString()}</p>
       <div className='button-group'>
         <button onClick={() => handleCourseDetails(course._id)}>Szczegóły</button>
-          {!isArchived &&!isUserPage && <button onClick={() => handleCourseRegistration(course._id)}>Zapisz się</button>}
-          {!isArchived &&isAdmin && <button onClick={() => handleEditCourse(course._id)}>Edytuj Dane</button>}
-          {!isArchived &&isAdmin && <button onClick={() => handleNewFormTemplate(course._id)}>Dodaj zapytanie w kursie</button>}
-          {!isArchived &&isAdmin && <button onClick={() => handleArchiveCourse(course._id)}>Archiwizuj Kurs</button>}
-          {!isArchived &&isUserPage && <button onClick={() => handleUserEditCourse(course._id)}>Edytuj swoje zgłoszenie</button>}
-          {!isArchived &&isUserPage && <button onClick={() => handleDeletefromCourses(course._id)}>Wypisz się</button>}
+        {!isArchived && !isUserPage && !isInstructor && (
+            <button onClick={() => handleCourseRegistration(course._id)}>Zapisz się</button>
+          )}
+
+          {!isArchived && !isUserPage && isAdmin && (
+            <button onClick={() => handleEditCourse(course._id)}>Edytuj Dane</button>
+          )}
+
+          { !isArchived && isAdmin && (
+            <>
+            <button onClick={() => handleNewFormTemplate(course._id)}>Dodaj zapytanie w kursie</button>
+            <button onClick={() => handleArchiveCourse(course._id)}>Archiwizuj Kurs</button>
+            </>
+          )}
+
+          {!isArchived && isUserPage && (
+            <>
+            <button onClick={() => handleUserEditCourse(course._id)}>Edytuj swoje zgłoszenie</button>
+            <button onClick={() => handleDeletefromCourses(course._id)}>Wypisz się</button>
+            </>
+          )}
+
+          {isInstructor && (
+            <>
+              <button onClick={() => handleSignupForFullCourse(course._id)}>Zapisz się na cały kurs</button>
+              <button onClick={() => handleSignupForHalfCourse(course._id)}>Zapisz się na połowę kursu</button>
+            </>
+          )}
       </div>
     </div>
   );

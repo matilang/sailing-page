@@ -312,6 +312,8 @@ router.get(
  *       500:
  *         description: Internal server error
  */
+
+
 router.put(
   "/form-registration/:courseId",
   ensureAuthenticated,
@@ -340,6 +342,68 @@ router.put(
     }
   }
 );
+
+/**
+ * @swagger
+ * /user/form-registration/{courseId}:
+ *   get:
+ *     summary: Get user's registration data for a course
+ *     description: Endpoint to retrieve user's registration data for a specific course.
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Registration data retrieved successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               fields:
+ *                 firstName: "Jane"
+ *                 lastName: "Smith"
+ *                 pesel: "9876543210"
+ *                 phoneNumber: "987-564-321"
+ *                 cost: 150
+ *                 date: "2023-12-01"
+ *                 email: "jane@example.com"
+ *       404:
+ *         description: Registration form not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/form-registration/:courseId",
+  ensureAuthenticated,
+  async (req, res) => {
+    try {
+      const courseId = req.params.courseId;
+      const userId = req.user._id;
+
+      // Znajdź istniejący formularz rejestracji
+      const existingForm = await RegistrationForm.findOne({
+        courseId,
+        userId,
+        isArchived: false,
+      });
+
+      if (!existingForm) {
+        return res.status(404).json({ error: "Registration form not found." });
+      }
+
+      // Zwróć dane formularza
+      res.json({ fields: existingForm.fields });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
 
 /**
  * @swagger

@@ -69,7 +69,7 @@ function Signup() {
                             Zarejestruj się
                         </button>
                         </form>
-                        <p><Link  to='/login'>Masz już konto?</Link></p>
+                    <p><Link  to='/login'>Masz już konto?</Link></p>
                 </div>
             </div>
         </div>

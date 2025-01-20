@@ -36,7 +36,7 @@ const CreateNewCourse = () => {
     try {
       const response = await axios.post('/courses', formData);
       console.log('Course created successfully:', response.data);
-      navigate('/');
+      navigate('/sailing-webpage');
     } catch (error) {
       console.error('Error creating course:', error);
     }
@@ -90,7 +90,7 @@ const CreateNewCourse = () => {
               <input type="text" name="courseDurationDays" value={formData.courseDurationDays} onChange={handleChange} required />
           </label>
 
-        <button type="submit">Create Course</button>
+        <button type="submit">Stwórz nowy kurs</button>
         </form>
         </div>
       </div>
@@ -101,44 +101,3 @@ const CreateNewCourse = () => {
 };
 
 export default CreateNewCourse;
-
-// export function CourseLabel ({name, value, handleChange}) {
-//   <label>
-//   <input
-//     type = 'text'
-//     name = {name}
-//     value = {value}
-//     onChange = {handleChange}
-//     />
-//     </label>
-// }
-
-// export default function Course() {
-
-//   <div>
-//   <CourseLabel
-//     name = 'name'
-//     value = {formData.courseDurationDays}
-//     onChange = {handleChange}
-//     />
-//     <CourseLabel
-//     name = 'name'
-//     value = {formData.courseDurationDays}
-//     onChange = {handleChange}
-//     />
-//     <CourseLabel
-//     name = 'name'
-//     value = {formData.courseDurationDays}
-//     onChange = {handleChange}
-//     />
-//     <CourseLabel
-//     name = 'name'
-//     value = {formData.courseDurationDays}
-//     onChange = {handleChange}
-//     />
-
-
-
-
-// </div>
-//   }

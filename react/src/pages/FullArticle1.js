@@ -79,8 +79,7 @@ export default function FullArticle1() {
                     </p>
                     <p><strong>Uprawnienia żeglarza jachtowego: </strong></p>
                     <ul>
-                        <li>prowadzenie jachtów żaglowych bez lub z pomocniczym napędem mechanicznym po wodach śródlądowych</li>
-                        <li>prowadzenie jachtów żaglowych bez lub z pomocniczym napędem mechanicznym o długości całkowitej do 8,5 m po wodach morskich w strefie 2 Mm od brzegu w porze dziennej</li>
+                        {generateArticleList(rights)}
                     </ul>
                 </div>
             </div>
